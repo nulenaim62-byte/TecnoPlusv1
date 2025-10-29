@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>TecnoPlus — Matriz de Riesgos (final)</title>
+  <style>
+    :root{
+      --bg:#f5f7fb; --card:#ffffff; --accent:#1f4e78; --muted:#586174;
+      --green:#92D050; --green-strong:#2b9b3a;
+      --yellow:#FFC000; --yellow-strong:#c88e00;
+      --orange:#FFA500; --orange-strong:#d46e00;
+      --red:#FF4D4D; --red-strong:#d92b2b;
+      --radius:12px; --gap:14px; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      color-scheme: light;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:#071126;-webkit-font-smoothing:antialiased}
+    .container{max-width:1180px;margin:28px auto;padding:20px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+    .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#2a7ab6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px}
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .grid{display:grid;grid-template-columns:1fr;gap:18px}
+    .card{background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:0 8px 24px rgba(16,24,40,0.06)}
+    .card h2{margin:0 0 8px 0;font-size:16px}
+    .muted{color:var(--muted);font-size:13px}
+
+    /* Processes */
+    .processes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .proc{display:flex;gap:12px;padding:12px;border-radius:10px;border:1px solid #eef2f6;align-items:center;cursor:pointer;background:linear-gradient(180deg, #fff, #fbfdff)}
+    .proc h3{margin:0;font-size:15px}
+    .proc p{margin:6px 0 0;font-size:13px;color:var(--muted)}
+
+    /* Criteria */
+    .criteria{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+    .criteria .box{flex:1;min-width:260px}
+    .smalltable{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:8px;overflow:hidden}
+    .smalltable th, .smalltable td{padding:8px;border-bottom:1px solid #f1f5f9;text-align:left}
+    .smalltable th{background:#fbfdff}
+
+    /* Controls */
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+    select,input[type=search],button{padding:8px 10px;border-radius:8px;border:1px solid #d6e2ef;background:white;font-size:13px}
+    input[type=number]{width:64px;padding:6px 8px;border-radius:8px;border:1px solid #e6eef7;text-align:center}
+
+    /* Table */
+    .table-wrap{overflow:auto;border-radius:10px}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th,td{padding:10px;border-bottom:1px solid #eef2f6;text-align:left;vertical-align:middle}
+    th{position:sticky;top:0;background:linear-gradient(0deg, rgba(255,255,255,0.95), rgba(255,255,255,0.95));backdrop-filter: blur(2px);font-weight:600}
+    tr:hover td{background:#fbfdff}
+    .badge{display:inline-block;padding:6px 8px;border-radius:8px;font-weight:600;font-size:13px}
+    .legend{display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap}
+    .sw{width:14px;height:14px;border-radius:4px;display:inline-block;margin-right:6px}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;background:rgba(6,8,10,0.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+    .dialog{width:720px;max-width:98%;background:var(--card);padding:18px;border-radius:12px;box-shadow:0 20px 40px rgba(16,24,40,0.12)}
+    .dialog header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .close{background:#f1f5f9;border-radius:8px;padding:6px 8px;cursor:pointer}
+
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+
+    @media (max-width:980px){ .grid{grid-template-columns:1fr;} input[type=number]{width:56px} }
+
+    .color-transition{transition:background-color 200ms ease, transform 120ms ease}
+    .blink{animation:blink 420ms ease}
+    @keyframes blink{0%{transform:scale(0.995)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">TP</div>
+      <div>
+        <h1>TecnoPlus S.A.S. — Matriz de Riesgos y Oportunidades</h1>
+        <!-- <p class="lead">Interactiva: modifica P e I (bruto y residual). Escala clara y evidencia integrada.</p> -->
+      </div>
+    </header>
+
+    <main class="grid">
+
+      <!-- Info + Processes -->
+      <section class="card" id="top">
+        <h2>Información y procesos clave</h2>
+          <section class="card" id="org-info">
+          <!-- <h2>Información general</h2> -->
+          <p class="muted"><strong>Descripción:</strong> Empresa dedicada al desarrollo y mantenimiento de software para PYMES. Empleados: 45</p>
+          <p class="muted" style="margin-top:8px"><strong>Misión:</strong> Brindar soluciones tecnológicas confiables y adaptadas a las necesidades del cliente.</p>
+        </section>
+
+        <div style="height:12px"></div>
+
+        <div class="processes" id="processesList">
+          <!-- JS injects process cards -->
+        </div>
+      </section>
+
+      <!-- Criteria -->
+      <section class="card" id="criteriaCard">
+        <h2>Criterios — Probabilidad e Impacto (visibles)</h2>
+        <div class="criteria">
+          <div class="box">
+            <strong>Probabilidad (P) — 1 a 5</strong>
+            <table class="smalltable" aria-label="Tabla probabilidad">
+              <thead><tr><th>Valor</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Muy baja</td><td>Rara vez (menos de 1/año)</td></tr>
+                <tr><td>2</td><td>Baja</td><td>Ocurre ocasionalmente</td></tr>
+                <tr><td>3</td><td>Media</td><td>Puede suceder varias veces</td></tr>
+                <tr><td>4</td><td>Alta</td><td>Sucede con frecuencia</td></tr>
+                <tr><td>5</td><td>Muy alta</td><td>Casi seguro</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="box">
+            <strong>Impacto (I) — 1 a 5</strong>
+            <table class="smalltable" aria-label="Tabla impacto">
+              <thead><tr><th>Valor</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Insignificante</td><td>Sin afectación relevante</td></tr>
+                <tr><td>2</td><td>Menor</td><td>Pequeño retraso o coste leve</td></tr>
+                <tr><td>3</td><td>Moderado</td><td>Afecta parcialmente procesos</td></tr>
+                <tr><td>4</td><td>Mayor</td><td>Pérdida económica o interrupción importante</td></tr>
+                <tr><td>5</td><td>Catastrófico</td><td>Impacto grave en la operación o reputación</td></tr>
+              </tbody>
+            </table>
+
+            <div style="margin-top:8px" class="muted">Escala P×I: 1–5 Bajo • 6–10 Moderado • 11–15 Alto • 16–25 Crítico</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Matrix -->
+      <section class="card" id="matrixCard">
+        <h2>Matriz interactiva</h2>
+
+        <div class="controls" style="margin-bottom:12px">
+          <label class="muted">Filtrar:</label>
+          <select id="filterProcess"><option value="all">— Todos los procesos —</option></select>
+          <select id="filterLevel"><option value="all">— Todos los niveles —</option><option value="Crítico">Crítico</option><option value="Alto">Alto</option><option value="Moderado">Moderado</option><option value="Bajo">Bajo</option></select>
+          <input type="search" id="search" placeholder="Buscar riesgo u oportunidad" />
+          <button id="reset">Reset</button>
+          <button id="exportCsv">Exportar CSV</button>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tabla">
+            <thead>
+              <tr>
+                <th>Proceso</th>
+                <th>Riesgo</th>
+                <th>Oportunidad</th>
+                <th>Prob.</th>
+                <th>Imp.</th>
+                <th>Riesgo Bruto</th>
+                <th>P (res)</th>
+                <th>I (res)</th>
+                <th>Riesgo Residual</th>
+                <th>Controles</th>
+                <th>Evidencias</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="legend">
+          <div><span class="sw" style="background:var(--green-strong)"></span>1–5 Bajo</div>
+          <div><span class="sw" style="background:var(--yellow-strong)"></span>6–10 Moderado</div>
+          <div><span class="sw" style="background:var(--orange-strong)"></span>11–15 Alto</div>
+          <div><span class="sw" style="background:var(--red-strong)"></span>16–25 Crítico</div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <footer>Proyecto académico — Gestión del Riesgo Organizacional • Ingeniería de Sistemas — 2025</footer>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="dialog" role="dialog" aria-modal="true">
+      <header>
+        <h2 id="mTitle">Detalle</h2>
+        <div class="close" id="closeModal">✕</div>
+      </header>
+      <div id="mBody"></div>
+    </div>
+  </div>
+
+  <script>
+    // Processes with distinct, convincing justifications
+    const processes = [
+      { id:'p1', name:'Desarrollo de software', justify:
+        'Responsable de diseñar, construir y entregar las soluciones contratadas. Su eficiencia determina calidad del producto, cumplimiento de plazos y satisfacción del cliente; impacta ingresos y reputación.',
+        clave:'Es clave porque asegura la calidad, eficiencia y cumplimiento de los proyectos, permitiendo entregar soluciones tecnológicas confiables y alineadas con las necesidades del cliente.'    
+         },
+      { id:'p2', name:'Ventas y atención al cliente', justify:
+        'Encargado de captar clientes y gestionar soporte postventa. Un servicio deficiente reduce retención y ventas recurrentes; un servicio fuerte impulsa renovaciones y referencias.',
+        clave:'Es clave porque permite comprender las necesidades del cliente, ofrecer soluciones adecuadas y mantener su satisfacción, fortaleciendo la relación comercial y la fidelización.'
+         },
+      { id:'p3', name:'Gestión de infraestructura TI', justify:
+        'Soporta servidores, redes y backups que mantienen los servicios activos. Fallas provocan pérdidas de datos, interrupciones de servicio y posibles sanciones contractuales.',
+        clave:"Es clave porque garantiza la disponibilidad, seguridad y rendimiento de los sistemas tecnológicos, asegurando el soporte eficiente para el desarrollo y operación del software."
+         },
+      { id:'p4', name:'Gestión de talento humano', justify:
+        'Administra contratación, formación y retención del personal clave. Alta rotación o falta de formación afectan la capacidad técnica, la continuidad de proyectos y la productividad.',
+        clave:'Es clave porque promueve el desarrollo, motivación y bienestar del personal, asegurando equipos capacitados y comprometidos que impulsan la productividad y la innovación en la empresa.' }
+    ];
+
+    // Data rows (4 processes)
+    const data = [
+      {
+        procesoId:'p1', proceso:'Desarrollo de software', riesgo:'Retrasos en los proyectos',
+        controles:'Implementar Scrum, uso de Jira/Trello, reuniones diarias y revisiones semanales',
+        oportunidad:'Aplicar metodologías ágiles (Scrum/Kanban)', probBruto:4, impactBruto:4, probRes:2, impactRes:3,
+        evidencias:'Reportes de avance, actas de reuniones, tableros (Jira)', causas:['Planificación deficiente','Sobrecarga de tareas','Falta de comunicación'],
+        consecuencias:['Incumplimiento con el cliente','Pérdida de confianza','Penalizaciones económicas']
+      },
+      {
+        procesoId:'p2', proceso:'Ventas y atención al cliente', riesgo:'Pérdida de clientes por respuesta tardía',
+        controles:'Implementar CRM, definir SLA de respuesta, encuestas de satisfacci\u00f3n trimestrales',
+        oportunidad:'Implementar CRM y SLAs', probBruto:3, impactBruto:4, probRes:2, impactRes:3,
+        evidencias:'Registros en CRM, tiempos de respuesta, encuestas', causas:['Falta de seguimiento','Canales ineficientes','Ausencia de KPIs'],
+        consecuencias:['Disminución de ventas','Daño reputacional']
+      },
+      {
+        procesoId:'p3', proceso:'Gestión de infraestructura TI', riesgo:'Fallos en servidores / pérdida de datos',
+        controles:'Copias de seguridad diarias automatizadas, antivirus/firewall avanzados, migracion a la nube',
+        oportunidad:'Migración progresiva a la nube y backups automatizados', probBruto:5, impactBruto:5, probRes:2, impactRes:4,
+        evidencias:'Logs de backups, auditorías, pruebas de recuperación', causas:['Ataques cibernéticos','Backups incompletos','Infraestructura obsoleta'],
+        consecuencias:['Pérdida de información crítica','Interrupción servicios','Impacto económico']
+      },
+      {
+        procesoId:'p4', proceso:'Gestión de talento humano', riesgo:'Alta rotación de personal clave',
+        controles:'Control del desempeño del personal para evaluar resultados, identificar mejoras y asegurar el cumplimiento de los objetivos organizacionales.',
+        oportunidad:'Programas de retención y formación', probBruto:3, impactBruto:4, probRes:2, impactRes:2,
+        evidencias:'Registros de formación, encuestas de clima, contratos', causas:['Falta de plan de carrera','Salarios no competitivos','Ambiente laboral'],
+        consecuencias:['Pérdida de know-how','Retrasos en entregas','Costos de reemplazo']
+      }
+    ];
+
+    // Helpers: level and color
+    function levelFromValue(v){
+      if(v <= 5) return {level:'Bajo', color:getComputedStyle(document.documentElement).getPropertyValue('--green-strong').trim()};
+      if(v <= 10) return {level:'Moderado', color:getComputedStyle(document.documentElement).getPropertyValue('--yellow-strong').trim()};
+      if(v <= 15) return {level:'Alto', color:getComputedStyle(document.documentElement).getPropertyValue('--orange-strong').trim()};
+      return {level:'Crítico', color:getComputedStyle(document.documentElement).getPropertyValue('--red-strong').trim()};
+    }
+
+    // Render process cards and filter options
+    const processesListEl = document.getElementById('processesList');
+    const filterProcess = document.getElementById('filterProcess');
+    processes.forEach(p=>{
+      const d = document.createElement('div'); d.className='proc'; d.tabIndex=0;
+      d.innerHTML = `<div style="width:8px;height:48px;background:linear-gradient(180deg,var(--accent),#2a7ab6);border-radius:6px"></div>
+                     <div style="flex:1"><h3>${p.name}</h3><p class="muted">Clic para ver justificación</p></div>`;
+      d.addEventListener('click', ()=> openProcessModal(p));
+      d.addEventListener('keypress', e=>{ if(e.key==='Enter') openProcessModal(p); });
+      processesListEl.appendChild(d);
+
+      // add to filter select
+      const opt = document.createElement('option'); opt.value = p.name; opt.textContent = p.name;
+      filterProcess.appendChild(opt);
+    });
+
+    // Table render
+    const tbody = document.querySelector('#tabla tbody');
+    const filterLevel = document.getElementById('filterLevel');
+    const search = document.getElementById('search');
+    const resetBtn = document.getElementById('reset');
+    const exportBtn = document.getElementById('exportCsv');
+
+    function createNumberInput(value, onChange){
+      const inp = document.createElement('input'); inp.type='number'; inp.min=1; inp.max=5; inp.value=value;
+      inp.addEventListener('input', e=>{
+        let v = parseInt(e.target.value) || 1;
+        if(v < 1) v = 1; if(v > 5) v = 5; e.target.value = v;
+        onChange(v);
+        e.target.classList.add('blink'); setTimeout(()=> e.target.classList.remove('blink'), 420);
+      });
+      return inp;
+    }
+
+    function renderTable(){
+      tbody.innerHTML = '';
+      const fp = filterProcess.value;
+      const fl = filterLevel.value;
+      const s = search.value.trim().toLowerCase();
+
+      data.forEach(row=>{
+        if(fp !== 'all' && fp !== row.proceso) return;
+        const brutov = row.probBruto * row.impactBruto;
+        const resv = row.probRes * row.impactRes;
+        const brutol = levelFromValue(brutov).level;
+        const resl = levelFromValue(resv).level;
+        if(fl !== 'all' && fl !== brutol && fl !== resl) return;
+
+        const hay = (row.proceso + ' ' + row.riesgo + ' ' + row.oportunidad + ' ' + row.evidencias).toLowerCase();
+        if(s && !hay.includes(s)) return;
+
+        const tr = document.createElement('tr');
+
+        // click row => open detail modal (skip when clicking inputs)
+        tr.addEventListener('click', (e)=>{ if(e.target.tagName.toLowerCase() !== 'input') openRowModal(row); });
+
+        const td = txt => { const c = document.createElement('td'); c.textContent = txt; return c; };
+
+        tr.appendChild(td(row.proceso));
+        tr.appendChild(td(row.riesgo));
+        tr.appendChild(td(row.oportunidad));
+
+        const tdP = document.createElement('td'); const inpP = createNumberInput(row.probBruto, v=>{ row.probBruto = v; updateRowVisual(tr,row); });
+        tdP.appendChild(inpP); tr.appendChild(tdP);
+
+        const tdI = document.createElement('td'); const inpI = createNumberInput(row.impactBruto, v=>{ row.impactBruto = v; updateRowVisual(tr,row); });
+        tdI.appendChild(inpI); tr.appendChild(tdI);
+
+        const tdRB = document.createElement('td'); tdRB.className='color-transition'; tr.appendChild(tdRB);
+
+        const tdPr = document.createElement('td'); const inpPr = createNumberInput(row.probRes, v=>{ row.probRes = v; updateRowVisual(tr,row); });
+        tdPr.appendChild(inpPr); tr.appendChild(tdPr);
+
+        const tdIr = document.createElement('td'); const inpIr = createNumberInput(row.impactRes, v=>{ row.impactRes = v; updateRowVisual(tr,row); });
+        tdIr.appendChild(inpIr); tr.appendChild(tdIr);
+
+        const tdRR = document.createElement('td'); tdRR.className='color-transition'; tr.appendChild(tdRR);
+
+        tr.appendChild(td(row.controles));
+        tr.appendChild(td(row.evidencias));
+
+        tbody.appendChild(tr);
+        updateRowVisual(tr,row);
+      });
+    }
+
+    function updateRowVisual(tr, row){
+      const brutov = row.probBruto * row.impactBruto;
+      const resv = row.probRes * row.impactRes;
+      const binfo = levelFromValue(brutov);
+      const rinfo = levelFromValue(resv);
+
+      const cells = tr.querySelectorAll('td');
+      // columns: 0 proceso,1 riesgo,2 oport,3 P,4 I,5 RB,6 Pr,7 Ir,8 RR,9 evid
+      const tdRB = cells[5]; const tdRR = cells[8];
+      tdRB.textContent = `${brutov} (${binfo.level})`;
+      tdRB.style.background = binfo.color; tdRB.style.borderRadius='8px'; tdRB.style.textAlign='center'; tdRB.style.fontWeight='700';
+      tdRR.textContent = `${resv} (${rinfo.level})`;
+      tdRR.style.background = rinfo.color; tdRR.style.borderRadius='8px'; tdRR.style.textAlign='center'; tdRR.style.fontWeight='700';
+    }
+
+    // Modal for processes and row details
+    const modal = document.getElementById('modal');
+    const mTitle = document.getElementById('mTitle');
+    const mBody = document.getElementById('mBody');
+    const closeModalBtn = document.getElementById('closeModal');
+    closeModalBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', e=>{ if(e.target.id==='modal') closeModal(); });
+
+    function openProcessModal(proc){
+      mTitle.textContent = proc.name;
+      mBody.innerHTML = `<p class="muted">${proc.justify}</p>
+        <p style="margin-top:10px;font-weight:700">¿Por qué es clave?</p>
+        <p style="margin:0">${proc.clave}</p>`;
+      showModal();
+    }
+
+    function openRowModal(row){
+      mTitle.textContent = `Detalle — ${row.riesgo}`;
+      const causas = row.causas.map(c=>`<li>${c}</li>`).join('');
+      const cons = row.consecuencias.map(c=>`<li>${c}</li>`).join('');
+      mBody.innerHTML = `<p><strong>Proceso:</strong> ${row.proceso}</p>
+        <p><strong>Oportunidad:</strong> ${row.oportunidad}</p>
+        <p><strong>Causas:</strong></p><ul>${causas}</ul>
+        <p><strong>Consecuencias:</strong></p><ul>${cons}</ul>
+        <p><strong>Evidencias que demuestran control:</strong></p><p>${row.evidencias}</p>`;
+      showModal();
+    }
+
+    function showModal(){ modal.style.display='flex'; modal.setAttribute('aria-hidden','false'); }
+    function closeModal(){ modal.style.display='none'; modal.setAttribute('aria-hidden','true'); }
+
+    // Export CSV
+    function exportCSV(){
+      const rows = [['Proceso','Riesgo','Oportunidad','P','I','Riesgo Bruto','P_res','I_res','Riesgo Residual','Evidencias']];
+      const fp = filterProcess.value; const fl = filterLevel.value; const s = search.value.trim().toLowerCase();
+      data.forEach(row=>{
+        if(fp !== 'all' && row.proceso !== fp) return;
+        const brutov = row.probBruto * row.impactBruto; const resv = row.probRes * row.impactRes;
+        const brutol = levelFromValue(brutov).level; const resl = levelFromValue(resv).level;
+        if(fl !== 'all' && fl !== brutol && fl !== resl) return;
+        const hay = (row.proceso + ' ' + row.riesgo + ' ' + row.oportunidad + ' ' + row.evidencias).toLowerCase();
+        if(s && !hay.includes(s)) return;
+        rows.push([row.proceso,row.riesgo,row.oportunidad,row.probBruto,row.impactBruto,`${brutov} (${brutol})`,row.probRes,row.impactRes,`${resv} (${resl})`,row.evidencias]);
+      });
+      const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'}); const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='Matriz_Riesgos_TecnoPlus.csv'; document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // Events & init
+    filterProcess.addEventListener('change', renderTable);
+    filterLevel.addEventListener('change', renderTable);
+    search.addEventListener('input', ()=> setTimeout(renderTable, 120));
+    resetBtn.addEventListener('click', ()=>{ filterProcess.value='all'; filterLevel.value='all'; search.value=''; renderTable(); });
+    exportBtn.addEventListener('click', exportCSV);
+
+    // initial render
+    renderTable();
+  </script>
+</body>
+</html>
