@@ -161,6 +161,8 @@
                 <th>I (res)</th>
                 <th>Riesgo Residual</th>
                 <th>Controles</th>
+                <th>Eval. Controles</th>
+                <th>Frecuencia</th>
                 <th>Evidencias</th>
               </tr>
             </thead>
@@ -218,13 +220,17 @@
       {
         procesoId:'p1', proceso:'Desarrollo de software', riesgo:'Retrasos en los proyectos',
         controles:'Implementar Scrum, uso de Jira/Trello, reuniones diarias y revisiones semanales',
+        evalControles:'Efectivo',
+        frecuencia:'3 veces/año',
         oportunidad:'Aplicar metodologías ágiles (Scrum/Kanban)', probBruto:4, impactBruto:4, probRes:2, impactRes:3,
         evidencias:'Reportes de avance, actas de reuniones, tableros (Jira)', causas:['Planificación deficiente','Sobrecarga de tareas','Falta de comunicación'],
         consecuencias:['Incumplimiento con el cliente','Pérdida de confianza','Penalizaciones económicas']
       },
       {
         procesoId:'p2', proceso:'Ventas y atención al cliente', riesgo:'Pérdida de clientes por respuesta tardía',
-        controles:'Implementar CRM, definir SLA de respuesta, encuestas de satisfacci\u00f3n trimestrales',
+        controles:'Implementar CRM, definir SLA de respuesta, encuestas de satisfacción trimestrales',
+        evalControles:'Efectivo',
+        frecuencia:'2 veces/año',
         oportunidad:'Implementar CRM y SLAs', probBruto:3, impactBruto:4, probRes:2, impactRes:3,
         evidencias:'Registros en CRM, tiempos de respuesta, encuestas', causas:['Falta de seguimiento','Canales ineficientes','Ausencia de KPIs'],
         consecuencias:['Disminución de ventas','Daño reputacional']
@@ -232,6 +238,8 @@
       {
         procesoId:'p3', proceso:'Gestión de infraestructura TI', riesgo:'Fallos en servidores / pérdida de datos',
         controles:'Copias de seguridad diarias automatizadas, antivirus/firewall avanzados, migracion a la nube',
+        evalControles:'Muy efectivo',
+        frecuencia:'1 vez/año',
         oportunidad:'Migración progresiva a la nube y backups automatizados', probBruto:5, impactBruto:5, probRes:2, impactRes:4,
         evidencias:'Logs de backups, auditorías, pruebas de recuperación', causas:['Ataques cibernéticos','Backups incompletos','Infraestructura obsoleta'],
         consecuencias:['Pérdida de información crítica','Interrupción servicios','Impacto económico']
@@ -239,6 +247,8 @@
       {
         procesoId:'p4', proceso:'Gestión de talento humano', riesgo:'Alta rotación de personal clave',
         controles:'Control del desempeño del personal para evaluar resultados, identificar mejoras y asegurar el cumplimiento de los objetivos organizacionales.',
+        evalControles:'Efectivo',
+        frecuencia:'2 veces/año',
         oportunidad:'Programas de retención y formación', probBruto:3, impactBruto:4, probRes:2, impactRes:2,
         evidencias:'Registros de formación, encuestas de clima, contratos', causas:['Falta de plan de carrera','Salarios no competitivos','Ambiente laboral'],
         consecuencias:['Pérdida de know-how','Retrasos en entregas','Costos de reemplazo']
@@ -332,6 +342,8 @@
         const tdRR = document.createElement('td'); tdRR.className='color-transition'; tr.appendChild(tdRR);
 
         tr.appendChild(td(row.controles));
+        tr.appendChild(td(row.evalControles));
+        tr.appendChild(td(row.frecuencia));
         tr.appendChild(td(row.evidencias));
 
         tbody.appendChild(tr);
@@ -346,7 +358,7 @@
       const rinfo = levelFromValue(resv);
 
       const cells = tr.querySelectorAll('td');
-      // columns: 0 proceso,1 riesgo,2 oport,3 P,4 I,5 RB,6 Pr,7 Ir,8 RR,9 evid
+      // columns: 0 proceso,1 riesgo,2 oport,3 P,4 I,5 RB,6 Pr,7 Ir,8 RR,9 controles,10 eval,11 frec,12 evid
       const tdRB = cells[5]; const tdRR = cells[8];
       tdRB.textContent = `${brutov} (${binfo.level})`;
       tdRB.style.background = binfo.color; tdRB.style.borderRadius='8px'; tdRB.style.textAlign='center'; tdRB.style.fontWeight='700';
@@ -387,7 +399,7 @@
 
     // Export CSV
     function exportCSV(){
-      const rows = [['Proceso','Riesgo','Oportunidad','P','I','Riesgo Bruto','P_res','I_res','Riesgo Residual','Evidencias']];
+      const rows = [['Proceso','Riesgo','Oportunidad','P','I','Riesgo Bruto','P_res','I_res','Riesgo Residual','Controles','Eval. Controles','Frecuencia','Evidencias']];
       const fp = filterProcess.value; const fl = filterLevel.value; const s = search.value.trim().toLowerCase();
       data.forEach(row=>{
         if(fp !== 'all' && row.proceso !== fp) return;
@@ -396,7 +408,7 @@
         if(fl !== 'all' && fl !== brutol && fl !== resl) return;
         const hay = (row.proceso + ' ' + row.riesgo + ' ' + row.oportunidad + ' ' + row.evidencias).toLowerCase();
         if(s && !hay.includes(s)) return;
-        rows.push([row.proceso,row.riesgo,row.oportunidad,row.probBruto,row.impactBruto,`${brutov} (${brutol})`,row.probRes,row.impactRes,`${resv} (${resl})`,row.evidencias]);
+        rows.push([row.proceso,row.riesgo,row.oportunidad,row.probBruto,row.impactBruto,`${brutov} (${brutol})`,row.probRes,row.impactRes,`${resv} (${resl})`,row.controles,row.evalControles,row.frecuencia,row.evidencias]);
       });
       const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
       const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'}); const url = URL.createObjectURL(blob);
